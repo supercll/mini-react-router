@@ -27,6 +27,11 @@ export function Route() {
 export function useLocation() {
   return React.useContext(LocationContext).location
 }
+export function useSearchParams() {
+  const location = React.useContext(LocationContext).location
+  const pathname = location.pathname
+  return new URLSearchParams(pathname.split('?')[1])
+}
 export function useRoutes(routes) {
   const location = useLocation()
   const pathname = location.pathname
@@ -37,6 +42,7 @@ export function useRoutes(routes) {
       return element
     }
   }
+  return null
 }
 function compilePath(path) {
   let regexpSource = '^' + path
@@ -46,7 +52,9 @@ function compilePath(path) {
 }
 export function matchPath(path, pathname) {
   let matcher = compilePath(path)
-  let match = pathname.match(matcher)
+  let [name, query] = pathname.split('?')
+  console.log('query', query)
+  let match = name.match(matcher)
   if (!match) return null
   return match
 }
